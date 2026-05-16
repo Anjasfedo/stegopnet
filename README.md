@@ -18,6 +18,67 @@ All architectural foundations, including the integration of the Pyramid Pooling 
 
 StegoPNet is an end-to-end deep learning framework designed to hide a full-sized RGB secret image within a cover image of identical dimensions ($256 \times 256$). By leveraging a **Pyramid Pooling Module (PPM)**, the network gains a global understanding of the cover image's structure. This allows the model to embed data more intelligently in areas where changes are less perceptible to the human eye and statistical analysis tools.
 
+## 🚀 Getting Started
+
+### 1. Installation
+
+Ensure you are using **Python 3.6.5** and **PyTorch 1.2.0**.
+
+```bash
+pip install torch==1.2.0 torchvision==0.4.0 numpy scikit-image
+
+```
+
+### 2. Dataset Setup
+
+To replicate the research, use the **ImageNet-256** dataset (or any subset of high-quality images). Organize your `data/` directory as follows:
+
+```text
+StegoPNet/
+└── data/
+    ├── train/   # ~45,000 images (Subfolders for classes)
+    ├── val/     # ~5,000 images
+    └── test/    # ~5,000 images
+
+```
+
+*Note: For the trial run, we utilized the classic **Lena** and **Baboon** pair.*
+
+### 3. Running Training
+
+You can toggle the PPM module within the `train.py` script. To run the full ablation study, you should train both versions:
+
+* **To train with PPM (Proposed):** Ensure `h_net = HidingNet(use_ppm=True)` is set in `train.py`.
+* **To train without PPM (Baseline):** Set `use_ppm=False` in the model initialization.
+
+Run the training script:
+
+```bash
+python train.py
+
+```
+
+### 4. Monitoring Results
+
+* **Logs:** Training loss (Hiding vs Reveal) is saved to `results/log_train.csv`.
+* **Visual Progress:** The script automatically saves triplets (Cover, Stego, Reveal) every 500 iterations in the `results/` folder. Check these to see how well the "camouflage" is evolving.
+* **Checkpoints:** Model weights are saved as `.pth` files in the `checkpoints/` folder every epoch.
+
+### 5. Evaluation
+
+Once training is complete, use `evaluate.py` to calculate final metrics and prepare data for steganalysis.
+
+```bash
+python evaluate.py
+
+```
+
+This script will:
+
+1. Calculate average **PSNR**, **SSIM**, and **MSE**.
+2. Generate **Error Maps** to visualize pixel differences.
+3. Save clean and stego image pairs for **StegExpose** analysis.
+
 ---
 
 ## 🧬 Key Component: Pyramid Pooling Module (PPM)
