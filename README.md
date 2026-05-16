@@ -18,6 +18,31 @@ All architectural foundations, including the integration of the Pyramid Pooling 
 
 StegoPNet is an end-to-end deep learning framework designed to hide a full-sized RGB secret image within a cover image of identical dimensions ($256 \times 256$). By leveraging a **Pyramid Pooling Module (PPM)**, the network gains a global understanding of the cover image's structure. This allows the model to embed data more intelligently in areas where changes are less perceptible to the human eye and statistical analysis tools.
 
+---
+
+## 🧬 Key Component: Pyramid Pooling Module (PPM)
+
+Unlike standard CNNs that focus on local pixel neighborhoods, the PPM captures features at multiple scales ($32 \times 32$, $16 \times 16$, $8 \times 8$, $4 \times 4$, and $2 \times 2$). This multi-scale approach is crucial for:
+
+* **Global Context Awareness:** Recognizing large, smooth areas versus high-texture regions.
+* **Adaptive Embedding:** Prioritizing edges and complex textures to minimize visual artifacts.
+
+---
+
+## 🧮 Mathematical Framework
+
+The total loss of the system is optimized using a weighted Mean Squared Error ($MSE$):
+
+$$Loss = L_{h} + \alpha L_{r}$$
+
+Where:
+
+* $L_{h}$ is the Hiding Loss ($MSE$ between Cover and Stego).
+* $L_{r}$ is the Reveal Loss ($MSE$ between Secret and Revealed).
+* $\alpha$ is the hyperparameter set to **0.6** to balance the priority between invisibility and reconstruction.
+
+---
+
 ## 🚀 Getting Started
 
 ### 1. Installation
@@ -81,15 +106,6 @@ This script will:
 
 ---
 
-## 🧬 Key Component: Pyramid Pooling Module (PPM)
-
-Unlike standard CNNs that focus on local pixel neighborhoods, the PPM captures features at multiple scales ($32 \times 32$, $16 \times 16$, $8 \times 8$, $4 \times 4$, and $2 \times 2$). This multi-scale approach is crucial for:
-
-* **Global Context Awareness:** Recognizing large, smooth areas versus high-texture regions.
-* **Adaptive Embedding:** Prioritizing edges and complex textures to minimize visual artifacts.
-
----
-
 ## 🧪 Experimental Results (Trial Run)
 
 The following results were obtained from a trial execution conducted in **Google Colab (Tesla T4 GPU)** using the classic **Lena** image as the cover and the **Baboon** image as the secret payload. The models were trained for **3,000 iterations**.
@@ -111,28 +127,6 @@ The training curve demonstrates the stability and efficiency gain provided by th
 
 * **PPM (Orange Line):** Exhibits a smoother and faster descent. It achieves a significantly lower loss, proving that the PPM helps the network solve the "hiding" and "revealing" tasks more effectively.
 * **No PPM (Blue Line):** Displays higher volatility and plateaus at a higher loss value. The sharp spikes suggest that without multi-scale features, the network struggles to find a stable way to hide the high-entropy Baboon data.
-
----
-
-## 🧮 Mathematical Framework
-
-The total loss of the system is optimized using a weighted Mean Squared Error ($MSE$):
-
-$$Loss = L_{h} + \alpha L_{r}$$
-
-Where:
-
-* $L_{h}$ is the Hiding Loss ($MSE$ between Cover and Stego).
-* $L_{r}$ is the Reveal Loss ($MSE$ between Secret and Revealed).
-* $\alpha$ is the hyperparameter set to **0.6** to balance the priority between invisibility and reconstruction.
-
----
-
-## 📁 Repository Structure
-
-* `stegopnet.py`: Contains the `PPMModule`, `HidingNet`, and `RevealNet` classes.
-* `train.py`: Main training script utilized for the Colab trial.
-* `helpers.py`: Utility functions for metrics like **PSNR** and **SSIM**.
 
 ---
 
